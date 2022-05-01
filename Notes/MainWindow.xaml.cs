@@ -4,6 +4,8 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Notes
 {
@@ -84,6 +86,27 @@ namespace Notes
         private void BtnDeleteNote_Click(object sender, RoutedEventArgs e)
         {
             _noteDataList.Remove(lbNotesList.SelectedItem as NoteModel);
+        }
+
+        private void TbSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (tbSearch.Text == "")
+            {
+                // Create an ImageBrush.
+                ImageBrush textImageBrush = new ImageBrush();
+                textImageBrush.ImageSource =
+                    new BitmapImage(
+                        new Uri(@"pack://application:,,,/Resources/search.PNG")
+                    );
+                textImageBrush.AlignmentX = AlignmentX.Left;
+                textImageBrush.Stretch = Stretch.UniformToFill;
+                // Use the brush to paint the button's background.
+                tbSearch.Background = textImageBrush;
+            }
+            else
+            {
+                tbSearch.Background = Brushes.White;
+            }
         }
     }
 }
