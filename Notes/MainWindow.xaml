@@ -5,8 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Notes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Заметки" Height="450" Width="800" FontSize="14" Loaded="Window_Loaded">
+    <Grid Margin="2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ListBox x:Name="lbNotesList" Grid.Column="0" Grid.Row ="0" HorizontalContentAlignment="Stretch" Background="Lavender" SelectionChanged="LbNotesList_SelectionChanged">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding Title}" FontWeight="Bold"/>
+                        <TextBlock Grid.Row="1" Text="{Binding LastChangedDate}" FontSize="12" FontStyle="Italic"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button x:Name="btnNewNote" Grid.Column="0" Grid.Row ="1" Content="Новая заметка" Click="BtnNewNote_Click"/>
+        <GridSplitter Grid.Column="1" Grid.RowSpan ="3" HorizontalAlignment="Left" Width="3"/>
+
+        <DockPanel x:Name="dpNote" Grid.Column="2" Grid.RowSpan="2" LastChildFill="True" IsEnabled="False" Margin="0">
+            <TextBox x:Name="tbNoteTitle" DockPanel.Dock="Top" TextWrapping="Wrap" Text="Заметка 0" MaxLength="100" FontSize="16" FontWeight="Bold"/>
+            <DockPanel DockPanel.Dock="Bottom" LastChildFill="False">
+                <Button x:Name="btnSaveNote" DockPanel.Dock="Left" Content="Сохранить" Click="BtnSaveNote_Click"/>
+                <Button x:Name="btnDeleteNote" DockPanel.Dock="Right" Content="Удалить" Click="BtnDeleteNote_Click"/>
+            </DockPanel>
+            <TextBox x:Name="tbNoteText" TextWrapping="Wrap" Text="Текст" AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto"/>
+        </DockPanel>
+                       
     </Grid>
 </Window>
