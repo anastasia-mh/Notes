@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Notes"
         mc:Ignorable="d"
-        Title="Заметки" Height="450" Width="800" FontSize="14" Loaded="Window_Loaded">
+        Title="Заметки" Height="450" Width="800" FontSize="14" Loaded="Window_Loaded" Icon="Resources/icon.png">
     <Grid Margin="2">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
