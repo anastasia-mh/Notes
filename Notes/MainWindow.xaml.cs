@@ -2,6 +2,7 @@
 using Notes.Services;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -35,6 +36,21 @@ namespace Notes
                 Close();
             }
         }
+
+        /*private void UpdateNotes()
+        {
+            var currentNotes = _noteDataList;
+
+            if (string.IsNullOrWhiteSpace(tbSearch.Text))
+            {
+                lbNotesList.ItemsSource = _noteDataList;
+            }
+            else
+            {
+                currentNotes = new BindingList<NoteModel>(currentNotes.Where(s => s.Title.IndexOf(tbSearch.Text) >= 0).ToList<NoteModel>());
+                lbNotesList.ItemsSource = currentNotes;
+            }
+        }*/
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -102,10 +118,12 @@ namespace Notes
                 textImageBrush.Stretch = Stretch.UniformToFill;
                 // Use the brush to paint the button's background.
                 tbSearch.Background = textImageBrush;
+                //может поможет lbNotesList.ItemsSource = _noteDataList;
             }
             else
             {
                 tbSearch.Background = Brushes.White;
+                //UpdateNotes();
             }
         }
     }
