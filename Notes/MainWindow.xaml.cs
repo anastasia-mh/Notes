@@ -1,10 +1,12 @@
 ﻿using Notes.Models;
 using Notes.Services;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -16,7 +18,7 @@ namespace Notes
     public partial class MainWindow : Window
     {
         private readonly string PATH = $"{Environment.CurrentDirectory}\\noteDataList.json";
-        private BindingList<NoteModel> _noteDataList;
+        private List<NoteModel> _noteDataList;
         private FileIOService _fileIOService;
 
         public MainWindow()
@@ -37,21 +39,6 @@ namespace Notes
             }
         }
 
-        /*private void UpdateNotes()
-        {
-            var currentNotes = _noteDataList;
-
-            if (string.IsNullOrWhiteSpace(tbSearch.Text))
-            {
-                lbNotesList.ItemsSource = _noteDataList;
-            }
-            else
-            {
-                currentNotes = new BindingList<NoteModel>(currentNotes.Where(s => s.Title.IndexOf(tbSearch.Text) >= 0).ToList<NoteModel>());
-                lbNotesList.ItemsSource = currentNotes;
-            }
-        }*/
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _fileIOService = new FileIOService(PATH);
@@ -67,6 +54,17 @@ namespace Notes
             }
             Save();
             lbNotesList.ItemsSource = _noteDataList;
+
+            CollectionView view = CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource) as CollectionView;
+            view.Filter = NoteFilter;
+        }
+
+        private bool NoteFilter(object item)
+        {
+            if (String.IsNullOrEmpty(tbSearch.Text))
+                return true;
+            else
+                return ((item as NoteModel).Title.IndexOf(tbSearch.Text, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         private void LbNotesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -85,6 +83,7 @@ namespace Notes
         private void BtnNewNote_Click(object sender, RoutedEventArgs e)
         {
             _noteDataList.Insert(0, new NoteModel() { Title = "Новая заметка" });
+            CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource).Refresh();
             lbNotesList.SelectedIndex = 0;
         }
 
@@ -93,15 +92,18 @@ namespace Notes
             (lbNotesList.SelectedItem as NoteModel).Title = tbNoteTitle.Text;
             (lbNotesList.SelectedItem as NoteModel).Text = tbNoteText.Text;
             (lbNotesList.SelectedItem as NoteModel).LastChangedDate = DateTime.Now;
+            _noteDataList.Remove(lbNotesList.SelectedItem as NoteModel);
             _noteDataList.Insert(0, lbNotesList.SelectedItem as NoteModel);
-            _noteDataList.RemoveAt(lbNotesList.SelectedIndex);
-            lbNotesList.SelectedIndex = 0;
             Save();
+            tbSearch.Text = "";
+            CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource).Refresh();
+            lbNotesList.SelectedIndex = 0;
         }
 
         private void BtnDeleteNote_Click(object sender, RoutedEventArgs e)
         {
             _noteDataList.Remove(lbNotesList.SelectedItem as NoteModel);
+            CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource).Refresh();
         }
 
         private void TbSearch_TextChanged(object sender, TextChangedEventArgs e)
@@ -118,13 +120,12 @@ namespace Notes
                 textImageBrush.Stretch = Stretch.UniformToFill;
                 // Use the brush to paint the button's background.
                 tbSearch.Background = textImageBrush;
-                //может поможет lbNotesList.ItemsSource = _noteDataList;
             }
             else
             {
                 tbSearch.Background = Brushes.White;
-                //UpdateNotes();
             }
+            CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource).Refresh();
         }
     }
 }

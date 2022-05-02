@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Notes.Models;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 
@@ -14,13 +15,13 @@ namespace Notes.Services
             PATH = path;
         }
 
-        public BindingList<NoteModel> LoadData()
+        public List<NoteModel> LoadData()
         {
             var fileExists = File.Exists(PATH);
             if (!fileExists)
             {
                 File.CreateText(PATH).Dispose();
-                return new BindingList<NoteModel>()
+                return new List<NoteModel>()
                 {
                     new NoteModel(){Title = "test", Text = "blablabla"}
                 };
@@ -28,11 +29,11 @@ namespace Notes.Services
             using (var reader = File.OpenText(PATH))
             {
                 var fileText = reader.ReadToEnd();
-                return JsonConvert.DeserializeObject<BindingList<NoteModel>>(fileText);
+                return JsonConvert.DeserializeObject<List<NoteModel>>(fileText);
             }
         }
 
-        public void SaveData(BindingList<NoteModel> noteDataList)
+        public void SaveData(List<NoteModel> noteDataList)
         {
             using (StreamWriter writer = File.CreateText(PATH))
             {
