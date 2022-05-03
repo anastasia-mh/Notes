@@ -83,6 +83,7 @@ namespace Notes
         private void BtnNewNote_Click(object sender, RoutedEventArgs e)
         {
             _noteDataList.Insert(0, new NoteModel() { Title = "Новая заметка" });
+            tbSearch.Text = "";
             CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource).Refresh();
             lbNotesList.SelectedIndex = 0;
         }
