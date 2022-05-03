@@ -25,20 +25,7 @@ namespace Notes
         {
             InitializeComponent();
         }
-
-        private void Save()
-        {
-            try
-            {
-                _fileIOService.SaveData(_noteDataList);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                Close();
-            }
-        }
-
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _fileIOService = new FileIOService(PATH);
@@ -52,7 +39,7 @@ namespace Notes
                 MessageBox.Show(ex.Message);
                 Close();
             }
-            Save();
+            
             lbNotesList.ItemsSource = _noteDataList;
 
             CollectionView view = CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource) as CollectionView;
@@ -77,7 +64,6 @@ namespace Notes
             }
             else
                 dpNote.IsEnabled = false;
-            Save();
         }
 
         private void BtnNewNote_Click(object sender, RoutedEventArgs e)
@@ -95,7 +81,7 @@ namespace Notes
             (lbNotesList.SelectedItem as NoteModel).LastChangedDate = DateTime.Now;
             _noteDataList.Remove(lbNotesList.SelectedItem as NoteModel);
             _noteDataList.Insert(0, lbNotesList.SelectedItem as NoteModel);
-            Save();
+            
             tbSearch.Text = "";
             CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource).Refresh();
             lbNotesList.SelectedIndex = 0;
@@ -127,6 +113,19 @@ namespace Notes
                 tbSearch.Background = Brushes.White;
             }
             CollectionViewSource.GetDefaultView(lbNotesList.ItemsSource).Refresh();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            try
+            {
+                _fileIOService.SaveData(_noteDataList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Close();
+            }
         }
     }
 }
